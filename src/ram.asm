@@ -14,6 +14,17 @@ PPUBufferHi:	.dsb 1
 PPUScrollX:		.dsb 1
 PPUScrollY:		.dsb 1
 
+TextScriptLo:	.dsb 1
+TextScriptHi:	.dsb 1
+TextScriptPPUHi:	.dsb 1
+TextScriptPPULo:	.dsb 1
+TextScriptPPULen:	.dsb 1
+TextScriptPPUChar:	.dsb 1
+TextScriptPPUEnd:	.dsb 1	; This should always be 0
+TextScriptEnd:	.dsb 1
+TextScriptSpeed:	.dsb 1
+
+
 ; PPU registers
 ; $2000-$2007
 

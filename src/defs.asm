@@ -4,6 +4,11 @@ HMirror = $01
 NametableMapping = $A000
 
 
+TextScript_NewAddress   = $FC
+TextScript_ChangeSpeed  = $FD
+TextScript_DoDelay      = $FE
+TextScript_End          = $FF
+
 
 ; Controller input stuff
 ControllerInput_Right  = %00000001

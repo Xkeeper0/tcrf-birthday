@@ -59,11 +59,12 @@ NMI:
 
 	; Do PPU writes if needed
 	LDA PPUBufferHi
-	BEQ +
-	JSR UpdatePPUFromBuffer
-+
+	BNE +
+	LDA PPUBufferLo
+	BEQ ++
++	JSR UpdatePPUFromBuffer
 
-	LDA PPUScrollX
+++	LDA PPUScrollX
 	STA PPUSCROLL
 	LDA PPUScrollY
 	STA PPUSCROLL
@@ -83,6 +84,16 @@ ExitNMI:
 	PLA
 	PLP
 	RTI
+
+
+WaitXFrames:
+	; This assumes you set X to an amount of frames to wait.
+	; If you didn't do that you did something dumb.
+-	JSR WaitForNMI
+	DEX
+	BNE -
+	RTS
+
 
 
 ; Wait for the next NMI to hit
@@ -141,10 +152,88 @@ UpdatePPUFromBuffer:
 	INY
 	JMP --						; Otherwise, we're done; check for more data
 
-	LDA #$00					; Mark the buffer as being done with
++	LDA #$00					; Mark the buffer as being done with
 	STA PPUBufferLo
+	STA PPUBufferHi
+	RTS							; Done!
 
-+	RTS							; Done!
+
+; -----------------------------------------------------------------------------
+
+DoTextScript:
+	; TextScriptLo/Hi: Current read address of script
+	; TextScriptPPULo/Hi: Current address to write to in PPU mem
+	; TextScriptSpeed: Frames to wait between commands
+	; TextScriptDelay: Frames left until next command
+
+	; Get command
+	JSR DoTextScript_GetNextByte
+
+	; Based on A, do things
+	CMP #TextScript_End				; If the next byte is terminating, done
+	BEQ DoTextScript_End
+
+	CMP #TextScript_NewAddress		; New PPU address to write to
+	BEQ DoTextScript_NewAddress
+
+	CMP #TextScript_ChangeSpeed		; New speed to use
+	BEQ DoTextScript_ChangeSpeed
+
+	CMP #TextScript_DoDelay			; Wait some frames before continuing
+	BEQ DoTextScript_DoDelay
+
+	; Nothing, guess we're drawing another character.
+	STA TextScriptPPUChar
+	LDA #<TextScriptPPUHi
+	STA PPUBufferLo
+	LDA #>TextScriptPPUHi
+	STA PPUBufferHi
+
+	LDX TextScriptSpeed				; Wait frames as required
+	JSR WaitXFrames
+
+	INC TextScriptPPULo				; Advance PPU pointer
+	BNE +
+	INC TextScriptPPUHi				; and its high byte, if needed
+
++	JMP DoTextScript
+
+DoTextScript_End:
+	RTS								; Laters.
+
+
+DoTextScript_NewAddress:
+	JSR DoTextScript_GetNextByte	; Get the next PPU address...
+	STA TextScriptPPUHi				; ...and store it
+	JSR DoTextScript_GetNextByte	; Get the low byte, too...
+	STA TextScriptPPULo				; ...and store that too.
+	LDA #$01						; Mark PPU buffer as having one char...
+	STA TextScriptPPULen
+	LDA #$00						; ...and ensure it ends properly.
+	STA TextScriptPPUEnd
+	JMP DoTextScript				; Resume
+
+
+DoTextScript_ChangeSpeed:
+	JSR DoTextScript_GetNextByte	; Get the next byte, our delay
+	STA	TextScriptSpeed				; Set it as our new delay
+	JMP DoTextScript				; Resume
+
+DoTextScript_DoDelay:
+	JSR DoTextScript_GetNextByte	; Get number of frames to wait
+	TAX
+	JSR WaitXFrames					; Wait for some frames!
+	JMP DoTextScript
+
+
+DoTextScript_GetNextByte:
+	LDY #$00				; Get the current byte of the script...
+	LDA (TextScriptLo), Y
+	INC TextScriptLo		; Increment read address by one
+	BNE +
+	INC TextScriptHi		; Update high byte if overflow
++	RTS
+
 
 
 
@@ -183,13 +272,23 @@ Start:
 	STA PPUBufferLo
 	LDA #>Palette_Main
 	STA PPUBufferHi
-	JSR WaitForNMI
+
+	LDX #60
+	JSR WaitXFrames
 
 	LDA #<Text_HelloWorld
 	STA PPUBufferLo
 	LDA #>Text_HelloWorld
 	STA PPUBufferHi
-	JSR WaitForNMI
+
+	LDX #240
+	JSR WaitXFrames
+
+	LDA #<TScript_Test
+	STA TextScriptLo
+	LDA #>TScript_Test
+	STA TextScriptHi
+	JSR DoTextScript
 
 	JMP DoNothing
 
@@ -207,9 +306,47 @@ Palette_Main:
 	.db $00 ; End
 
 Text_HelloWorld:
-	.db $22, $28, 19, "Trapped in NES ROM,"
-	.db $22, $48, 19, "    send  help!    "
+	.db $22, $c7, 19, " This ROM is for a "
+	.db $22, $e7, 19, "special thing soon."
+	.db $23, $27, 19, "It's not ready yet,"
+	.db $23, $47, 19, "   so be patient!  "
 	.db $00 ; End
+
+
+TScript_Test:
+	.db TextScript_NewAddress, $20, $a1
+	.db TextScript_ChangeSpeed, 2
+	.db "Some sample text for the new"
+	.db TextScript_DoDelay, 20
+	.db TextScript_NewAddress, $20, $e1
+	.db TextScript_ChangeSpeed, 5
+	.db "'Text Script System'. "
+	.db TextScript_DoDelay, 90
+	.db TextScript_ChangeSpeed, 45
+	.db "..."
+	.db TextScript_ChangeSpeed, 2
+	.db "yep."
+	.db TextScript_NewAddress, $21, $21
+	.db TextScript_DoDelay, 60
+	.db "It can type"
+	.db TextScript_ChangeSpeed, 40
+	.db " slow"
+	.db TextScript_ChangeSpeed, 10
+	.db ", or "
+	.db TextScript_ChangeSpeed, 1
+	.db "fast."
+	.db TextScript_DoDelay, 30
+	.db TextScript_NewAddress, $21, $61
+	.db TextScript_ChangeSpeed, 2
+	.db "It can pause, too."
+	.db TextScript_DoDelay, 120
+	.db TextScript_ChangeSpeed, 3
+	.db " Like that."
+	.db TextScript_DoDelay, 180
+	.db TextScript_ChangeSpeed, 1
+	.db TextScript_NewAddress, $21, $c1
+	.db "I think it's pretty neat."
+	.db TextScript_End
 
 
 SetUpPPU:
