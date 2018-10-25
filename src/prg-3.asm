@@ -16,7 +16,7 @@ RESET:
 	BPL -
 
 	; Set nametable mirroring
-	LDA #VMirror
+	LDA #HMirror
 	STA NametableMapping
 
 	; Enable extended RAM at 6000-7FFF
@@ -57,7 +57,16 @@ NMI:
 	LDA #1
 	STA NMIWaitFlag
 
+	; Do PPU writes if needed
+	LDA PPUBufferHi
+	BEQ +
+	JSR UpdatePPUFromBuffer
++
 
+	LDA PPUScrollX
+	STA PPUSCROLL
+	LDA PPUScrollY
+	STA PPUSCROLL
 
 	; Otherwise, do stuff we can only do during NMI here
 	LDA PPUMaskMirror
@@ -109,6 +118,36 @@ ChangeMMC3BankA000:
 
 
 
+; PPUBufferLo / Hi: Address of PPU data to read from
+UpdatePPUFromBuffer:
+	LDY #$00
+--	LDA (PPUBufferLo), Y		; Get high address...
+	BEQ +						; No buffer now, just leave
+	LDX PPUSTATUS				; Clear address latch
+	STA PPUADDR					; ... store high address
+	INY
+	LDA (PPUBufferLo), Y		; Get low address...
+	STA PPUADDR					; .. store it
+	INY
+	LDA (PPUBufferLo), Y		; Get length
+	TAX							; X = bytes to copy
+
+-	INY							; Start copying...
+	LDA (PPUBufferLo), Y		; Load data...
+	STA PPUDATA					; ...store into PPU
+	DEX							; Decrement bytes left
+	BNE -						; If we're not done, continue
+
+	INY
+	JMP --						; Otherwise, we're done; check for more data
+
+	LDA #$00					; Mark the buffer as being done with
+	STA PPUBufferLo
+
++	RTS							; Done!
+
+
+
 ; -----------------------------------------------------------------------------
 
 ClearMemory:
@@ -140,6 +179,18 @@ Start:
 
 	JSR EnableNMI
 
+	LDA #<Palette_Main
+	STA PPUBufferLo
+	LDA #>Palette_Main
+	STA PPUBufferHi
+	JSR WaitForNMI
+
+	LDA #<Text_HelloWorld
+	STA PPUBufferLo
+	LDA #>Text_HelloWorld
+	STA PPUBufferHi
+	JSR WaitForNMI
+
 	JMP DoNothing
 
 
@@ -149,6 +200,16 @@ DoNothing:
 
 
 
+Palette_Main:
+	;   PPU Addr  Len  Data
+	.db $3F, $00, $04, $0F, $01, $11, $31
+	.db $3F, $08, $04, $0F, $15, $25, $35
+	.db $00 ; End
+
+Text_HelloWorld:
+	.db $22, $28, 19, "Trapped in NES ROM,"
+	.db $22, $48, 19, "    send  help!    "
+	.db $00 ; End
 
 
 SetUpPPU:

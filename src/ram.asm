@@ -9,7 +9,10 @@ PPUCtrlMirror:	.dsb 1
 PPUMaskMirror:	.dsb 1
 MMC3Bank8000:	.dsb 1
 MMC3BankA000:	.dsb 1
-
+PPUBufferLo:	.dsb 1
+PPUBufferHi:	.dsb 1
+PPUScrollX:		.dsb 1
+PPUScrollY:		.dsb 1
 
 ; PPU registers
 ; $2000-$2007
