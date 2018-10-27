@@ -21,6 +21,17 @@ ControllerInput_B      = %01000000
 ControllerInput_A      = %10000000
 
 ; -----------------------------------------------
+; Sprite stuff
+SpriteAttrib_Palette0  = %00000000
+SpriteAttrib_Palette1  = %00000001
+SpriteAttrib_Palette2  = %00000010
+SpriteAttrib_Palette3  = %00000011
+; Unused bits ...            |||
+SpriteAttrib_Priority  = %00100000
+SpriteAttrib_FlipX     = %01000000
+SpriteAttrib_FlipY     = %10000000
+
+; -----------------------------------------------
 ; PPU stuff
 
 ; PPUStatus flags

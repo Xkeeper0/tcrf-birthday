@@ -24,6 +24,20 @@ TextScriptPPUEnd:	.dsb 1	; This should always be 0
 TextScriptEnd:	.dsb 1
 TextScriptSpeed:	.dsb 1
 
+; End of zero page
+; --------------------------------------
+.pad $0100, $00
+StackArea: .dsb $100
+; Technically usable but the deeper you go the more likely you are to
+; cause Problems
+
+; --------------------------------------
+; Sprite DMA can technically go anywhere but it tends to be at $200
+SpriteDMAArea: .dsb $100
+SpriteY			= $200
+SpriteIndex		= $201
+SpriteAttrib	= $202
+SpriteX			= $203
 
 ; PPU registers
 ; $2000-$2007

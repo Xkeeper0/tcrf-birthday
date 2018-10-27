@@ -1,6 +1,7 @@
 
 .include "src/init.asm"
 .include "src/interrupts.asm"
+.include "src/ppu.asm"
 .include "src/mmc3.asm"
 .include "src/textscript.asm"
 
@@ -15,31 +16,41 @@ WaitXFrames:
 
 
 Start:
+	JSR DisableNMI				; Turn off NMI while we're busy
+	JSR DisablePPURendering		; And that pesky PPU too
 
-	JSR EnableNMI
+	JSR DrawCactus
 
 	LDA #<Palette_Main
 	STA PPUBufferLo
 	LDA #>Palette_Main
 	STA PPUBufferHi
 
+	JSR EnableNMI
 	JSR WaitForNMI
+
+	JSR EnablePPURendering
+
+
+	; Old code to draw some sample stuff
+
 	;LDX #60
 	;JSR WaitXFrames
 
-	LDA #<Text_HelloWorld
-	STA PPUBufferLo
-	LDA #>Text_HelloWorld
-	STA PPUBufferHi
+	;LDA #<Text_HelloWorld
+	;STA PPUBufferLo
+	;LDA #>Text_HelloWorld
+	;STA PPUBufferHi
+	;JSR WaitForNMI
 
-	LDX #120
-	JSR WaitXFrames
+	;LDX #120
+	;JSR WaitXFrames
 
-	LDA #<TScript_Test
-	STA TextScriptLo
-	LDA #>TScript_Test
-	STA TextScriptHi
-	JSR DoTextScript
+	;LDA #<TScript_Test
+	;STA TextScriptLo
+	;LDA #>TScript_Test
+	;STA TextScriptHi
+	;JSR DoTextScript
 
 	JMP DoNothing
 
@@ -50,17 +61,43 @@ DoNothing:
 
 
 
+DrawCactus:
+	LDA PPUSTATUS				; Flush PPU address latch
+	LDA #$20					; PPU address, high
+	STA PPUADDR
+	LDA #$00					; PPU address, low
+	STA PPUADDR
+
+	LDA #<CactusNametable		; Low address of cactus nametable data
+	STA TempAddrLo
+	LDA #>CactusNametable		; High address of cactus nametable data
+	STA TempAddrHi
+
+	LDX #$04					; Copying $400 bytes
+--	LDY #$00
+
+-	LDA (TempAddrLo), Y			; Get a byte of data...
+	STA PPUDATA					; ...stuff it into PPU
+	INY
+	BNE -						; Continue until we wrap Y...
+
+	INC TempAddrHi				; Increase the read address...
+	DEX							; Decrement the read count...
+	BNE --						; If still more, keep going.
+
+	RTS							; All done
+
 Palette_Main:
 	;   PPU Addr  Len
 	.db $3F, $00, $20
-	.db $0F, $01, $11, $31 ; BG 0
-	.db $0F, $03, $13, $33 ; BG 1
+	.db $0F, $00, $10, $30 ; BG 0
+	.db $0F, $09, $19, $38 ; BG 1
 	.db $0F, $05, $15, $35 ; BG 2
 	.db $0F, $07, $17, $37 ; BG 3
-	.db $0F, $02, $12, $32 ; SP 0
-	.db $0F, $04, $14, $34 ; SP 1
-	.db $0F, $06, $16, $36 ; SP 2
-	.db $0F, $08, $18, $38 ; SP 3
+	.db $0F, $08, $29, $38 ; SP 0
+	.db $0F, $06, $26, $30 ; SP 1
+	.db $0F, $1a, $2a, $30 ; SP 2
+	.db $0F, $12, $22, $30 ; SP 3
 	.db $00 ; End
 
 Text_HelloWorld:
@@ -105,3 +142,8 @@ TScript_Test:
 	.db TextScript_NewAddress, $21, $c1
 	.db "I think it's pretty neat."
 	.db TextScript_End
+
+
+	.db "CACTUS STUFF HERE:"
+CactusNametable:
+	.incbin "src/data/cactus-nametable.bin"
