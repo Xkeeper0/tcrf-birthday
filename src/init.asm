@@ -36,6 +36,12 @@ AfterClearRAM:
 	LDA #$AA				; Init PRNG seed
 	STA PRNGSeed+1
 
+	LDA #%10000000
+	STA FunfettiMask
+
+	LDA #$01
+	STA FunfettiSpeed
+
 	JMP Start				; Finally! Onto the main thing we're making!
 
 ;

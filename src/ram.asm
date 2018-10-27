@@ -26,6 +26,8 @@ TextScriptSpeed:	.dsb 1
 
 FrameCounter:		.dsb 1
 PRNGSeed:			.dsb 4
+FunfettiMask:		.dsb 1
+FunfettiSpeed:		.dsb 1
 
 ; End of zero page
 ; --------------------------------------

@@ -29,14 +29,38 @@ Start:
 
 	JSR EnableNMI
 	JSR WaitForNMI
-
 	JSR EnablePPURendering
 
+	LDX #60
+	JSR WaitXFrames
+	LDA #<Palette_Fade1
+	STA PPUBufferLo
+	LDA #>Palette_Fade1
+	STA PPUBufferHi
 
-	; Old code to draw some sample stuff
+	LDX #10
+	JSR WaitXFrames
+	LDA #<Palette_Fade2
+	STA PPUBufferLo
+	LDA #>Palette_Fade2
+	STA PPUBufferHi
 
-	;LDX #60
-	;JSR WaitXFrames
+	LDX #10
+	JSR WaitXFrames
+	LDA #<Palette_Fade3
+	STA PPUBufferLo
+	LDA #>Palette_Fade3
+	STA PPUBufferHi
+
+	LDX #10
+	JSR WaitXFrames
+	LDA #<Palette_Fade4
+	STA PPUBufferLo
+	LDA #>Palette_Fade4
+	STA PPUBufferHi
+
+	LDX #30
+	JSR WaitXFrames
 
 	LDA #<Text_HelloWorld
 	STA PPUBufferLo
@@ -76,7 +100,6 @@ AnimateConfetti:
 	LDA SpriteDMAArea, X		; Get the current tile index
 	PHA							; Make a quick copy...
 	AND #%11111000				; ...so we can erase the animation number.
-	;ORA #%01000000
 	STA Temp0002				; ...and put it here for a bit.
 	PLA							; Now get the copy again...
 	CLC							; Then clear carry...
@@ -87,8 +110,7 @@ AnimateConfetti:
 	LDY #$03
 +	DEX							; Decrement to edit sprite Y positions...
 	LDA FrameCounter
-	;AND #$00
-	AND #$01
+	AND FunfettiSpeed
 	BNE +
 	INC	SpriteDMAArea, X		; ...and increment it by one.
 	BNE +
@@ -96,7 +118,7 @@ AnimateConfetti:
 	STA SpriteDMAArea+3, X		; Hmm
 	LDA PRNGSeed+3
 	AND #%00111111
-	ORA #%10000000
+	ORA FunfettiMask
 	STA SpriteDMAArea+1, X		; Hmm?
 +	DEX
 	BPL -
@@ -149,19 +171,46 @@ Palette_Main:
 	;   PPU Addr  Len
 	.db $3F, $00, $20
 	.db $0F, $00, $10, $30 ; BG 0
-	.db $0F, $09, $19, $38 ; BG 1
+;	.db $0F, $09, $19, $38 ; BG 1
+	.db $0F, $0F, $0F, $0F ; BG 1
 	.db $0F, $05, $15, $35 ; BG 2
 	.db $0F, $07, $17, $37 ; BG 3
-	.db $0F, $08, $29, $38 ; SP 0
+;	.db $0F, $08, $29, $38 ; SP 0
+	.db $0F, $0F, $0F, $0F ; SP 0
 	.db $0F, $06, $26, $30 ; SP 1
 	.db $0F, $1a, $2a, $30 ; SP 2
 	.db $0F, $12, $22, $30 ; SP 3
 	.db $00 ; End
 
+Palette_Fade1:
+	;   PPU Addr  Len
+	.db $3F, $05, $03, $0F, $0F, $08 ; BG 1
+	.db $3F, $11, $03, $0F, $0F, $08 ; SP 0
+	.db $00 ; End
+
+Palette_Fade2:
+	;   PPU Addr  Len
+	.db $3F, $05, $03, $0F, $0F, $18 ; BG 1
+	.db $3F, $11, $03, $0F, $09, $18 ; SP 0
+	.db $00 ; End
+
+Palette_Fade3:
+	;   PPU Addr  Len
+	.db $3F, $05, $03, $0F, $09, $28 ; BG 1
+	.db $3F, $11, $03, $0F, $19, $28 ; SP 0
+	.db $00 ; End
+
+Palette_Fade4:
+	;   PPU Addr  Len
+	.db $3F, $05, $03, $09, $19, $38 ; BG 1
+	.db $3F, $11, $03, $08, $29, $38 ; SP 0
+	.db $00 ; End
+
+
 Text_HelloWorld:
-	.db $22, $e7, 19, "TCRF POO  CHALLENGE"
-	.db $23, $07, 19, " Our 9th birthday! "
-	.db $23, $42, 28, "Featuring the most realistic"
+	;.db $22, $e7, 19, "TCRF POO  CHALLENGE"
+	;.db $23, $07, 19, " Our 9th birthday! "
+	;.db $23, $42, 28, "Featuring the most realistic"
 	.db $23, $62, 28, " 8-bit poo simulator ever!! "
 	.db $00 ; End
 
@@ -206,7 +255,7 @@ CactusNametable:
 	.incbin "src/data/cactus-nametable.bin"
 
 ConfettiSprites:
-	.incbin "src/data/funfetti-sprites.bin"
+	.incbin "src/data/funfetti-blank.bin"
 
 
 
