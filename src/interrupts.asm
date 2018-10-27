@@ -44,6 +44,10 @@ NMI:
 	LDA PPUScrollY
 	STA PPUSCROLL
 
+	INC FrameCounter
+
+	JSR UpdatePRNG
+
 	; Otherwise, do stuff we can only do during NMI here
 	LDA PPUMaskMirror
 	STA PPUMASK

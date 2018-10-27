@@ -33,6 +33,9 @@ AfterClearRAM:
 	JSR EnableMMC3ExRAM		; Enable ExRAM (6000-7FFF)
 	JSR ClearExRAM			; ...and then clear that too
 
+	LDA #$AA				; Init PRNG seed
+	STA PRNGSeed+1
+
 	JMP Start				; Finally! Onto the main thing we're making!
 
 ;

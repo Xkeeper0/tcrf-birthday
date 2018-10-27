@@ -24,6 +24,9 @@ TextScriptPPUEnd:	.dsb 1	; This should always be 0
 TextScriptEnd:	.dsb 1
 TextScriptSpeed:	.dsb 1
 
+FrameCounter:		.dsb 1
+PRNGSeed:			.dsb 4
+
 ; End of zero page
 ; --------------------------------------
 .pad $0100, $00
