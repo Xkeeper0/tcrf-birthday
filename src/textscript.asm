@@ -21,6 +21,9 @@ DoTextScript:
 	CMP #TextScript_DoDelay			; Wait some frames before continuing
 	BEQ DoTextScript_DoDelay
 
+	CMP #TextScript_AdvanceLine		; Advance one line downwards
+	BEQ DoTextScript_AdvanceLine
+
 	; Nothing, guess we're drawing another character.
 	STA TextScriptPPUChar
 	LDA #<TextScriptPPUHi
@@ -43,8 +46,10 @@ DoTextScript_End:
 
 DoTextScript_NewAddress:
 	JSR DoTextScript_GetNextByte	; Get the next PPU address...
+	STA TextScriptPPUBaseHi			; ...and store it
 	STA TextScriptPPUHi				; ...and store it
 	JSR DoTextScript_GetNextByte	; Get the low byte, too...
+	STA TextScriptPPUBaseLo			; ...and store that too.
 	STA TextScriptPPULo				; ...and store that too.
 	LDA #$01						; Mark PPU buffer as having one char...
 	STA TextScriptPPULen
@@ -63,6 +68,19 @@ DoTextScript_DoDelay:
 	TAX
 	JSR WaitXFrames					; Wait for some frames!
 	JMP DoTextScript
+
+DoTextScript_AdvanceLine:
+	CLC
+	LDA TextScriptPPUBaseLo			; Get the old startind area
+	ADC #$20						; Bump it down one line
+	STA TextScriptPPUBaseLo			; Store it to our new place
+	STA TextScriptPPULo				; As well as the current address
+	BCC +
+	INC TextScriptPPUBaseHi			; Bump up the high byte if needed too
+	LDA TextScriptPPUBaseHi			; Get the new address
+	STA TextScriptPPUHi				; and store it to the current one too
+
++	JMP DoTextScript
 
 
 DoTextScript_GetNextByte:

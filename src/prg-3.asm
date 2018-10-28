@@ -9,8 +9,9 @@
 WaitXFrames:
 	; This assumes you set X to an amount of frames to wait.
 	; If you didn't do that you did something dumb.
+	STX FramesToWait
 -	JSR WaitForNMI
-	DEX
+	DEC FramesToWait
 	BNE -
 	RTS
 
@@ -33,10 +34,17 @@ Start:
 
 	LDX #60
 	JSR WaitXFrames
+	LDA #song_index_mus_tcrf
+	STA sound_param_byte_0
+	JSR play_song
+
+	LDX #240
+	JSR WaitXFrames
 	LDA #<Palette_Fade1
 	STA PPUBufferLo
 	LDA #>Palette_Fade1
 	STA PPUBufferHi
+
 
 	LDX #10
 	JSR WaitXFrames
@@ -59,14 +67,11 @@ Start:
 	LDA #>Palette_Fade4
 	STA PPUBufferHi
 
-	LDX #30
-	JSR WaitXFrames
-
-	LDA #<Text_HelloWorld
-	STA PPUBufferLo
-	LDA #>Text_HelloWorld
-	STA PPUBufferHi
-	JSR WaitForNMI
+	;LDA #<Text_HelloWorld
+	;STA PPUBufferLo
+	;LDA #>Text_HelloWorld
+	;STA PPUBufferHi
+	;JSR WaitForNMI
 
 	;LDX #120
 	;JSR WaitXFrames
@@ -77,11 +82,28 @@ Start:
 	;STA TextScriptHi
 	;JSR DoTextScript
 
+	LDX #240
+	JSR WaitXFrames
+
+
+	TextScript TScript_HappyBirthday
+	INC FunfettiEnable
+	LDX #240
+	JSR WaitXFrames
+	LDX #120
+	JSR WaitXFrames
+	TextScript TScript_DateOfBirth
+
+	;LDA #<TScript_HappyBirthday
+	;STA TextScriptLo
+	;LDA #>TScript_HappyBirthday
+	;STA TextScriptHi
+	;JSR DoTextScript
+
 	JMP DoNothing
 
 
 DoNothing:
-	JSR AnimateConfetti
 	JSR WaitForNMI
 	JMP DoNothing
 
@@ -211,9 +233,43 @@ Text_HelloWorld:
 	;.db $22, $e7, 19, "TCRF POO  CHALLENGE"
 	;.db $23, $07, 19, " Our 9th birthday! "
 	;.db $23, $42, 28, "Featuring the most realistic"
-	.db $23, $62, 28, " 8-bit poo simulator ever!! "
+	PPUPos 4, 5
+	;.db 22, "Happy birthday,  TCRF!"
+	PPUDat "Happy birthday,  TCRF!"
+;	.db $20, $85, 22, "Happy birthday,  TCRF!"
 	.db $00 ; End
 
+
+TScript_HappyBirthday:
+	TS_NewPos 3, 4
+	TS_Speed 1
+	.db "  Happy 9th birthday,  "
+	TS_Delay 95
+	TS_Speed 1
+	.db TextScript_AdvanceLine
+	.db TextScript_AdvanceLine
+	.db "The Cutting Room Floor!"
+	.db TextScript_End
+
+TScript_DateOfBirth:
+	TS_NewPos 23, 4
+	TS_Speed 3
+	.db "TCRF, the wiki"
+	TS_Delay 60
+	.db TextScript_AdvanceLine
+	.db "        October 25, "
+	TS_Delay 20
+	.db "2009"
+	TS_Delay 60
+	.db TextScript_AdvanceLine
+	.db TextScript_AdvanceLine
+	.db "Original website"
+	TS_Delay 60
+	.db TextScript_AdvanceLine
+	.db "       November 20, "
+	TS_Delay 20
+	.db "2002"
+	.db TextScript_End
 
 TScript_Test:
 	.db TextScript_NewAddress, $20, $a1

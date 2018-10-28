@@ -42,6 +42,9 @@ AfterClearRAM:
 	LDA #$01
 	STA FunfettiSpeed
 
+	; Init sound engine
+	.include "src/music/engine/ggsound-init.asm"
+
 	JMP Start				; Finally! Onto the main thing we're making!
 
 ;

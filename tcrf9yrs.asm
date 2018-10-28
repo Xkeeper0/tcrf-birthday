@@ -30,23 +30,24 @@
 .include "src/ram.asm"
 .ende
 
+.include "src/macros.asm"
 
 ; -----------------------------------------
 ; Program bank 0
 .base $8000
 .include "src/prg-0.asm"
-.pad $a000, #$00
+.pad $a000, #$F0
 ; -----------------------------------------
 ; Program bank 1
 .base $a000
 .include "src/prg-1.asm"
-.pad $c000, #$00
+.pad $c000, #$F1
 
 ; -----------------------------------------
 ; Program bank 2
 .base $c000
 .include "src/prg-2.asm"
-.pad $e000, #$00
+.pad $e000, #$F2
 
 ; -----------------------------------------
 ; Program bank 3

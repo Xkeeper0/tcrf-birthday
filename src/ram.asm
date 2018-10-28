@@ -5,6 +5,7 @@ TempAddrHi:		.dsb 1
 Temp0002:		.dsb 1
 Temp0003:		.dsb 1
 NMIWaitFlag:	.dsb 1
+FramesToWait:	.dsb 1
 PPUCtrlMirror:	.dsb 1
 PPUMaskMirror:	.dsb 1
 MMC3Bank8000:	.dsb 1
@@ -16,6 +17,8 @@ PPUScrollY:		.dsb 1
 
 TextScriptLo:	.dsb 1
 TextScriptHi:	.dsb 1
+TextScriptPPUBaseHi:	.dsb 1
+TextScriptPPUBaseLo:	.dsb 1
 TextScriptPPUHi:	.dsb 1
 TextScriptPPULo:	.dsb 1
 TextScriptPPULen:	.dsb 1
@@ -26,8 +29,13 @@ TextScriptSpeed:	.dsb 1
 
 FrameCounter:		.dsb 1
 PRNGSeed:			.dsb 4
+FunfettiEnable:		.dsb 1
 FunfettiMask:		.dsb 1
 FunfettiSpeed:		.dsb 1
+
+; Sound engine zero-page requirements
+.pad $0100 - SOUND_ENGINE_RAM_AREA_SIZE, $00
+.include "src/music/engine/ggsound-ram-zeropage.asm"
 
 ; End of zero page
 ; --------------------------------------
@@ -43,6 +51,15 @@ SpriteY			= $200
 SpriteIndex		= $201
 SpriteAttrib	= $202
 SpriteX			= $203
+
+
+; Sound engine (non-zero-page) requirements
+.include "src/music/engine/ggsound-ram.asm"
+
+
+
+; --------------------------------------
+; End of RAM
 
 ; PPU registers
 ; $2000-$2007

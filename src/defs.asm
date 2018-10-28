@@ -4,6 +4,7 @@ HMirror = $01
 NametableMapping = $A000
 
 
+TextScript_AdvanceLine  = $FB
 TextScript_NewAddress   = $FC
 TextScript_ChangeSpeed  = $FD
 TextScript_DoDelay      = $FE
@@ -66,3 +67,7 @@ PPUCtrl_SpriteSize8x8   = $00
 PPUCtrl_SpriteSize8x16  = $20
 PPUCtrl_NMIDisabled     = $00
 PPUCtrl_NMIEnabled      = $80
+
+
+; Sound engine
+.include "src/music/engine/ggsound-defs.asm"

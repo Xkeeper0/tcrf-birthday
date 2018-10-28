@@ -1,6 +1,9 @@
 ; -----------------------------------------------------------------------------
 ; If we end up here something probably went wrong, oops
 IRQ:
+	JSR DisableNMI
+	SEC
+-	BCS -
 	RTI
 
 ; -----------------------------------------------------------------------------
@@ -54,6 +57,9 @@ NMI:
 	LDA PPUCtrlMirror
 	STA PPUCTRL
 
+	; Update sound engine
+	soundengine_update
+
 	; Exiting NMI.
 	; Restore registers
 ExitNMI:
@@ -84,7 +90,10 @@ EnableNMI:
 
 ; Wait for the next NMI to hit
 WaitForNMI:
-	LDA #0
+	LDA FunfettiEnable
+	BEQ +
+	JSR AnimateConfetti
++	LDA #0
 	STA NMIWaitFlag
 -	LDA NMIWaitFlag
 	BEQ -
