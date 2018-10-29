@@ -42,3 +42,15 @@ ENDM
 MACRO TS_Speed s
 	.db TextScript_ChangeSpeed, s
 ENDM
+
+MACRO TS_Text s
+	.db s
+ENDM
+
+MACRO TS_NewLine
+	.db TextScript_AdvanceLine
+ENDM
+
+MACRO TS_End
+	.db TextScript_End
+ENDM

@@ -90,7 +90,7 @@ Start:
 	INC FunfettiEnable
 	LDX #240
 	JSR WaitXFrames
-	LDX #120
+	LDX #118
 	JSR WaitXFrames
 	TextScript TScript_DateOfBirth
 
@@ -239,73 +239,7 @@ Text_HelloWorld:
 ;	.db $20, $85, 22, "Happy birthday,  TCRF!"
 	.db $00 ; End
 
-
-TScript_HappyBirthday:
-	TS_NewPos 3, 4
-	TS_Speed 1
-	.db "  Happy 9th birthday,  "
-	TS_Delay 95
-	TS_Speed 1
-	.db TextScript_AdvanceLine
-	.db TextScript_AdvanceLine
-	.db "The Cutting Room Floor!"
-	.db TextScript_End
-
-TScript_DateOfBirth:
-	TS_NewPos 23, 4
-	TS_Speed 3
-	.db "TCRF, the wiki"
-	TS_Delay 60
-	.db TextScript_AdvanceLine
-	.db "        October 25, "
-	TS_Delay 20
-	.db "2009"
-	TS_Delay 60
-	.db TextScript_AdvanceLine
-	.db TextScript_AdvanceLine
-	.db "Original website"
-	TS_Delay 60
-	.db TextScript_AdvanceLine
-	.db "       November 20, "
-	TS_Delay 20
-	.db "2002"
-	.db TextScript_End
-
-TScript_Test:
-	.db TextScript_NewAddress, $20, $a1
-	.db TextScript_ChangeSpeed, 2
-	.db "Some sample text for the new"
-	.db TextScript_DoDelay, 20
-	.db TextScript_NewAddress, $20, $e1
-	.db TextScript_ChangeSpeed, 5
-	.db "'Text Script System'. "
-	.db TextScript_DoDelay, 90
-	.db TextScript_ChangeSpeed, 45
-	.db "..."
-	.db TextScript_ChangeSpeed, 2
-	.db "yep."
-	.db TextScript_NewAddress, $21, $21
-	.db TextScript_DoDelay, 60
-	.db "It can type"
-	.db TextScript_ChangeSpeed, 40
-	.db " slow"
-	.db TextScript_ChangeSpeed, 10
-	.db ", or "
-	.db TextScript_ChangeSpeed, 1
-	.db "fast."
-	.db TextScript_DoDelay, 30
-	.db TextScript_NewAddress, $21, $61
-	.db TextScript_ChangeSpeed, 2
-	.db "It can pause, too."
-	.db TextScript_DoDelay, 120
-	.db TextScript_ChangeSpeed, 3
-	.db " Like that."
-	.db TextScript_DoDelay, 180
-	.db TextScript_ChangeSpeed, 1
-	.db TextScript_NewAddress, $21, $c1
-	.db "I think it's pretty neat."
-	.db TextScript_End
-
+.include "src/textscripts.asm"
 
 CactusNametable:
 	.incbin "src/data/cactus-nametable.bin"
