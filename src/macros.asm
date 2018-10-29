@@ -16,6 +16,25 @@ MACRO PPUDat data
 ENDM
 
 
+;
+; Macro to set the PPU buffer address without having to
+; remember all those pesky 8 bit marker referenes and such
+;
+MACRO SetPPUBuffer addr
+	LDA #<addr
+	STA PPUBufferLo
+	LDA #>addr
+	STA PPUBufferHi
+ENDM
+
+;
+; Simple macro to run WaitForNMI a while
+;
+MACRO DelayFrames f
+	LDX f
+	JSR WaitXFrames
+ENDM
+
 
 
 MACRO TextScript addr

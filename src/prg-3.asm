@@ -23,86 +23,47 @@ Start:
 	JSR DrawCactus
 	JSR AddCactusSprites
 
-	LDA #<Palette_Main
-	STA PPUBufferLo
-	LDA #>Palette_Main
-	STA PPUBufferHi
+	SetPPUBuffer Palette_Main			; Set up to write our main pal
 
-	JSR EnableNMI
-	JSR WaitForNMI
-	JSR EnablePPURendering
+	JSR EnableNMI						; Enable NMIs and wait
+	JSR WaitForNMI						; (loads initial palette)
+	JSR EnablePPURendering				; now turn on the PPU proper
+	DelayFrames #60						; then wait a second
 
-	LDX #60
-	JSR WaitXFrames
-	LDA #song_index_mus_tcrf
+	LDA #song_index_mus_tcrf			; Play our cool song
 	STA sound_param_byte_0
 	JSR play_song
+	DelayFrames #240
 
-	LDX #240
-	JSR WaitXFrames
-	LDA #<Palette_Fade1
-	STA PPUBufferLo
-	LDA #>Palette_Fade1
-	STA PPUBufferHi
+	SetPPUBuffer Palette_Fade1			; Fade in the cactus
+	DelayFrames #10
 
+	SetPPUBuffer Palette_Fade2			; Brighter...
+	DelayFrames #10
 
-	LDX #10
-	JSR WaitXFrames
-	LDA #<Palette_Fade2
-	STA PPUBufferLo
-	LDA #>Palette_Fade2
-	STA PPUBufferHi
+	SetPPUBuffer Palette_Fade3			; BRIGHTER!
+	DelayFrames #10
 
-	LDX #10
-	JSR WaitXFrames
-	LDA #<Palette_Fade3
-	STA PPUBufferLo
-	LDA #>Palette_Fade3
-	STA PPUBufferHi
-
-	LDX #10
-	JSR WaitXFrames
-	LDA #<Palette_Fade4
-	STA PPUBufferLo
-	LDA #>Palette_Fade4
-	STA PPUBufferHi
-
-	;LDA #<Text_HelloWorld
-	;STA PPUBufferLo
-	;LDA #>Text_HelloWorld
-	;STA PPUBufferHi
-	;JSR WaitForNMI
-
-	;LDX #120
-	;JSR WaitXFrames
-
-	;LDA #<TScript_Test
-	;STA TextScriptLo
-	;LDA #>TScript_Test
-	;STA TextScriptHi
-	;JSR DoTextScript
-
-	LDX #240
-	JSR WaitXFrames
+	SetPPUBuffer Palette_Fade4			; BRIGHTER!!!!
+	DelayFrames #240					; (actually fully bright now)
 
 
-	TextScript TScript_HappyBirthday
-	INC FunfettiEnable
-	LDX #240
-	JSR WaitXFrames
-	LDX #118
-	JSR WaitXFrames
-	TextScript TScript_DateOfBirth
+	TextScript TScript_HappyBirthday	; Announce birthday
+	INC FunfettiEnable					; Turn on the funfetti
+	DelayFrames #240					; Wait a while
+	DelayFrames #118					; Wait more (8-bit, bah!)
+	TextScript TScript_DateOfBirth		; Show the dates now
 
-	;LDA #<TScript_HappyBirthday
-	;STA TextScriptLo
-	;LDA #>TScript_HappyBirthday
-	;STA TextScriptHi
-	;JSR DoTextScript
 
 	JMP DoNothing
 
 
+
+;
+; Do nothing! Somewhat misleading because NMI still does things,
+; and the WaitForNMI func does some things too.
+; But mostly it doesn't do anything of its own.
+;
 DoNothing:
 	JSR WaitForNMI
 	JMP DoNothing
@@ -149,6 +110,8 @@ UpdateJoypad:
 
 ;
 ; Check for input of our Very Secret Cheats.
+; B + A + D(own): Sara Parker's Poo(l) Challenge reference
+; ??????????????: :-)
 ;
 CheckCheatCodes:
 
@@ -166,18 +129,22 @@ CheckCheatCodes:
 
 +	RTS
 
-
+;
+; Animate the confetti every frame, moving it down and changing its tile
+; This also "resets" the confetti when it hits the bottom, giving it
+; a new tile and X position once it wraps around
+; (alternatively, they become pool balls instead)
+;
 AnimateConfetti:
-	; Animate the confetti
-	LDA FrameCounter
+	LDA FrameCounter			; We update the animation every ~4 frames
 	AND #$03
 	TAY
 
 	LDX #$7F					; Sprites to animate x 4 bytes per sprite
--	DEX
-	DEX
-	DEY
-	BNE +
+-	DEX							; We skip the attribute and X bytes,
+	DEX							; since we only care about the tile
+	DEY							; and the Y position.
+	BNE +						; (If ! an anim update frame, skip)
 	LDA SpriteDMAArea, X		; Get the current tile index
 	PHA							; Make a quick copy...
 	AND #%11111000				; ...so we can erase the animation number.
@@ -195,19 +162,24 @@ AnimateConfetti:
 	BNE +
 	INC	SpriteDMAArea, X		; ...and increment it by one.
 	BNE +
-	LDA PRNGSeed+2
-	STA SpriteDMAArea+3, X		; Hmm
-	LDA PRNGSeed+3
-	AND #%00111111
-	ORA FunfettiMask
-	STA SpriteDMAArea+1, X		; Hmm?
+	LDA PRNGSeed+2				; Get a random byte...
+	STA SpriteDMAArea+3, X		; ...store it as the new X position
+	LDA PRNGSeed+3				; Get another random byte...
+	AND #%00111111				; ...get only the lower 6 bits...
+	ORA FunfettiMask			; ...OR it with the funfetti gfx range...
+	STA SpriteDMAArea+1, X		; ...and store the new anim frame.
 +	DEX
 	BPL -
 	RTS							; Once we've updated all funfetti, we're done.
 
 
 
-
+;
+; Draw the cactus background to the nametable
+; You should probably make sure NMI is disabled first.
+; It would be smart to just do it in here, but smart is
+; not my name. honk
+;
 DrawCactus:
 	LDA PPUSTATUS				; Flush PPU address latch
 	LDA #$20					; PPU address, high
@@ -235,6 +207,9 @@ DrawCactus:
 	RTS							; All done
 
 
+;
+; Add the cacti additional color overlay sprites to the screen
+;
 AddCactusSprites:
 	LDA #<ConfettiSprites
 	STA TempAddrLo
@@ -248,67 +223,15 @@ AddCactusSprites:
 	BNE -						; Repeat until all copied
 	RTS
 
-Palette_Main:
-	;   PPU Addr  Len
-	.db $3F, $00, $20
-	.db $0F, $00, $10, $30 ; BG 0
-;	.db $0F, $09, $19, $38 ; BG 1
-	.db $0F, $0F, $0F, $0F ; BG 1
-	.db $0F, $05, $15, $35 ; BG 2
-	.db $0F, $07, $17, $37 ; BG 3
-;	.db $0F, $08, $29, $38 ; SP 0
-	.db $0F, $0F, $0F, $0F ; SP 0
-	.db $0F, $06, $26, $30 ; SP 1
-	.db $0F, $1a, $2a, $30 ; SP 2
-	.db $0F, $12, $22, $30 ; SP 3
-	.db $00 ; End
 
-Palette_Fade1:
-	;   PPU Addr  Len
-	.db $3F, $05, $03, $0F, $0F, $08 ; BG 1
-	.db $3F, $11, $03, $0F, $0F, $08 ; SP 0
-	.db $00 ; End
-
-Palette_Fade2:
-	;   PPU Addr  Len
-	.db $3F, $05, $03, $0F, $0F, $18 ; BG 1
-	.db $3F, $11, $03, $0F, $09, $18 ; SP 0
-	.db $00 ; End
-
-Palette_Fade3:
-	;   PPU Addr  Len
-	.db $3F, $05, $03, $0F, $09, $28 ; BG 1
-	.db $3F, $11, $03, $0F, $19, $28 ; SP 0
-	.db $00 ; End
-
-Palette_Fade4:
-	;   PPU Addr  Len
-	.db $3F, $05, $03, $09, $19, $38 ; BG 1
-	.db $3F, $11, $03, $08, $29, $38 ; SP 0
-	.db $00 ; End
-
-
-Text_HelloWorld:
-	;.db $22, $e7, 19, "TCRF POO  CHALLENGE"
-	;.db $23, $07, 19, " Our 9th birthday! "
-	;.db $23, $42, 28, "Featuring the most realistic"
-	PPUPos 4, 5
-	;.db 22, "Happy birthday,  TCRF!"
-	PPUDat "Happy birthday,  TCRF!"
-;	.db $20, $85, 22, "Happy birthday,  TCRF!"
-	.db $00 ; End
-
-.include "src/textscripts.asm"
-
-CactusNametable:
-	.incbin "src/data/cactus-nametable.bin"
-
-ConfettiSprites:
-	.incbin "src/data/funfetti-blank.bin"
-
-
-
-
+;
+; Updates the PRNG we stole off of Nesdev
+; Unlike the original one, this stores some old values in
+; PRNGSeed+2 and +3 so that we can use them later, instead
+; of generating new ones every time
+; (of course, we could end up *re*using them, but right now
+; this isn't a concern because they're for confetti only.)
+;
 UpdatePRNG:
 	LDA PRNGSeed+2	; Keep the last two generated bytes for use later
 	STA PRNGSeed+3
@@ -328,3 +251,18 @@ UpdatePRNG:
 	STA PRNGSeed
 	CMP #0     ; reload flags
 	RTS
+
+
+; -----------------------------------------------
+; -----------------------------------------------
+; Data in various forms lives down here
+; (please keep the lid closed)
+
+.include "src/data/palettes.asm"
+.include "src/textscripts.asm"
+
+CactusNametable:
+	.incbin "src/data/cactus-nametable.bin"
+
+ConfettiSprites:
+	.incbin "src/data/funfetti-blank.bin"
