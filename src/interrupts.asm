@@ -88,13 +88,54 @@ EnableNMI:
 	RTS
 
 
+;
 ; Wait for the next NMI to hit
+; If you call this and NMIs are disabled, you have done something
+; really, really stupid. Don't do that.
+;
 WaitForNMI:
-	LDA FunfettiEnable
-	BEQ +
-	JSR AnimateConfetti
-+	LDA #0
-	STA NMIWaitFlag
+	LDA FunfettiEnable		; Is the confetti enabled?
+	BEQ +					; If so, go ahead and...
+	JSR AnimateConfetti		; ...update the confetti.
+	JSR UpdateJoypad		; Update joypad this frame, too
++	LDA #0					; Clear the flag for NMI having run
+	STA NMIWaitFlag			; Then wait for NMI to set it again
 -	LDA NMIWaitFlag
 	BEQ -
+	RTS						; NMI ran, all over
+
+
+;
+; Read joypad (just player one, we don't care about P2 or whatever)
+; Normally if you're using DPCM samples you have to use multiple reads,
+; since DPCM reads will "helpfully" corrupt input sometimes
+; Thankfully we're not using DPCM samples so we don't have to caaaareeeeeee
+; At the same time that we strobe bit 0, we initialize the ring counter
+; so we're hitting two birds with one stone here
+; Code unabashedly stolen from nesdev's controller reading page
+;
+UpdateJoypad:
+	; While the strobe bit is set, buttons will be continuously reloaded.
+	; This means that reading from JOY1 will only return the state of the
+	; first button: button A.
+	LDA #$01
+	STA JOY1
+	STA Player1JoypadPress
+	LSR A        ; now A is 0
+	; By storing 0 into JOY1, the strobe bit is cleared and the reloading stops.
+	; This allows all 8 buttons (newly reloaded) to be read from JOY1.
+	STA JOY1
+-	LDA JOY1
+	LSR A					; bit0 -> Carry
+	ROL Player1JoypadPress	; Carry -> bit0; bit 7 -> Carry
+	BCC -
+	; At this point, Temp0002 has the full P1 joypad read in it ...
+
+	LDA Player1JoypadPress			; Load current buttons...
+	TAY								; ...save them to Y for later`
+	EOR Player1JoypadHeld			; XOR previous held buttons
+	AND Player1JoypadPress			; I may not need to use Temp0002 at all
+	STA Player1JoypadPress			; Store only new buttons
+	STY Player1JoypadHeld			; Everything down is held, too
+
 	RTS

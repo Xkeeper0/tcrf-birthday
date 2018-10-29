@@ -33,6 +33,9 @@ FunfettiEnable:		.dsb 1
 FunfettiMask:		.dsb 1
 FunfettiSpeed:		.dsb 1
 
+Player1JoypadPress:	.dsb 1
+Player1JoypadHeld:	.dsb 1
+
 ; Sound engine zero-page requirements
 .pad $0100 - SOUND_ENGINE_RAM_AREA_SIZE, $00
 .include "src/music/engine/ggsound-ram-zeropage.asm"
