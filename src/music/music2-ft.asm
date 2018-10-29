@@ -1,9 +1,11 @@
 song_index_mus_tcrf = 0
+song_index_mus_totaka = 1
 
 sfx_index_sfx_null = 0
 
 song_list:
   .dw _mus_tcrf
+  .dw _mus_totaka
 
 sfx_list:
   .dw _sfx_null
@@ -176,41 +178,64 @@ _mus_tcrf:
   .db 85
   .db 3
   .dw _mus_tcrf_square1
-  .dw 0
+  .dw _mus_tcrf_square2
   .dw _mus_tcrf_triangle
   .dw _mus_tcrf_noise
   .dw 0
 
 _mus_tcrf_square1:
   .db CAL,<(_mus_tcrf_square1_4),>(_mus_tcrf_square1_4)
-  .db CAL,<(_mus_tcrf_square1_5),>(_mus_tcrf_square1_5)
-_mus_tcrf_square1_loop:
   .db CAL,<(_mus_tcrf_square1_0),>(_mus_tcrf_square1_0)
   .db CAL,<(_mus_tcrf_square1_1),>(_mus_tcrf_square1_1)
   .db CAL,<(_mus_tcrf_square1_2),>(_mus_tcrf_square1_2)
   .db CAL,<(_mus_tcrf_square1_3),>(_mus_tcrf_square1_3)
+_mus_tcrf_square1_loop:
+  .db CAL,<(_mus_tcrf_square1_6),>(_mus_tcrf_square1_6)
+  .db CAL,<(_mus_tcrf_square1_7),>(_mus_tcrf_square1_7)
+  .db CAL,<(_mus_tcrf_square1_8),>(_mus_tcrf_square1_8)
+  .db CAL,<(_mus_tcrf_square1_9),>(_mus_tcrf_square1_9)
   .db GOT
   .dw _mus_tcrf_square1_loop
 
+_mus_tcrf_square2:
+  .db CAL,<(_mus_tcrf_square2_0),>(_mus_tcrf_square2_0)
+  .db CAL,<(_mus_tcrf_square2_0),>(_mus_tcrf_square2_0)
+  .db CAL,<(_mus_tcrf_square2_0),>(_mus_tcrf_square2_0)
+  .db CAL,<(_mus_tcrf_square2_0),>(_mus_tcrf_square2_0)
+  .db CAL,<(_mus_tcrf_square2_0),>(_mus_tcrf_square2_0)
+_mus_tcrf_square2_loop:
+  .db CAL,<(_mus_tcrf_square2_1),>(_mus_tcrf_square2_1)
+  .db CAL,<(_mus_tcrf_square2_2),>(_mus_tcrf_square2_2)
+  .db CAL,<(_mus_tcrf_square2_3),>(_mus_tcrf_square2_3)
+  .db CAL,<(_mus_tcrf_square2_4),>(_mus_tcrf_square2_4)
+  .db GOT
+  .dw _mus_tcrf_square2_loop
+
 _mus_tcrf_triangle:
   .db CAL,<(_mus_tcrf_triangle_4),>(_mus_tcrf_triangle_4)
-  .db CAL,<(_mus_tcrf_triangle_5),>(_mus_tcrf_triangle_5)
-_mus_tcrf_triangle_loop:
   .db CAL,<(_mus_tcrf_triangle_0),>(_mus_tcrf_triangle_0)
   .db CAL,<(_mus_tcrf_triangle_1),>(_mus_tcrf_triangle_1)
   .db CAL,<(_mus_tcrf_triangle_2),>(_mus_tcrf_triangle_2)
   .db CAL,<(_mus_tcrf_triangle_3),>(_mus_tcrf_triangle_3)
+_mus_tcrf_triangle_loop:
+  .db CAL,<(_mus_tcrf_triangle_0),>(_mus_tcrf_triangle_0)
+  .db CAL,<(_mus_tcrf_triangle_1),>(_mus_tcrf_triangle_1)
+  .db CAL,<(_mus_tcrf_triangle_2),>(_mus_tcrf_triangle_2)
+  .db CAL,<(_mus_tcrf_triangle_5),>(_mus_tcrf_triangle_5)
   .db GOT
   .dw _mus_tcrf_triangle_loop
 
 _mus_tcrf_noise:
+  .db CAL,<(_mus_tcrf_noise_1),>(_mus_tcrf_noise_1)
+  .db CAL,<(_mus_tcrf_noise_0),>(_mus_tcrf_noise_0)
+  .db CAL,<(_mus_tcrf_noise_0),>(_mus_tcrf_noise_0)
   .db CAL,<(_mus_tcrf_noise_0),>(_mus_tcrf_noise_0)
   .db CAL,<(_mus_tcrf_noise_0),>(_mus_tcrf_noise_0)
 _mus_tcrf_noise_loop:
   .db CAL,<(_mus_tcrf_noise_0),>(_mus_tcrf_noise_0)
   .db CAL,<(_mus_tcrf_noise_0),>(_mus_tcrf_noise_0)
   .db CAL,<(_mus_tcrf_noise_0),>(_mus_tcrf_noise_0)
-  .db CAL,<(_mus_tcrf_noise_1),>(_mus_tcrf_noise_1)
+  .db CAL,<(_mus_tcrf_noise_2),>(_mus_tcrf_noise_2)
   .db GOT
   .dw _mus_tcrf_noise_loop
 
@@ -238,8 +263,49 @@ _mus_tcrf_square1_4:
   .db STI,19,SLL,64,A0
   .db RET
 
-_mus_tcrf_square1_5:
+_mus_tcrf_square1_6:
+  .db STI,0,SL8,G2,C3,SL6,D3,E3,SL4,G2,SL8,GS2,C3,SL6,D3,E3,SL4
+  .db GS2
+  .db RET
+
+_mus_tcrf_square1_7:
+  .db STI,0,SL8,A2,C3,SL6,D3,E3,SL4,A2,SL8,AS2,D3,SL6,E3,F3,SL4
+  .db AS2
+  .db RET
+
+_mus_tcrf_square1_8:
+  .db STI,0,SL8,A2,C3,SL6,D3,F3,SL4,A2,SL8,GS2,C3,SL6,D3,F3,SL4
+  .db GS2
+  .db RET
+
+_mus_tcrf_square1_9:
+  .db STI,0,SL8,G2,C3,SL6,D3,E3,SL4,G2,SL8,F2,C3,SL6,G3,F3,SL4
+  .db E3
+  .db RET
+
+_mus_tcrf_square2_0:
   .db STI,19,SLL,64,A0
+  .db RET
+
+_mus_tcrf_square2_1:
+  .db STI,19,SL4,A0,STI,12,G2,SL5,C3,STI,19,SL3,A0,STI,12,SL6
+  .db D3,E3,SL4,G2,STI,19,A0,STI,12,GS2,C3,SL8,D3,SLC,E3
+  .db RET
+
+_mus_tcrf_square2_2:
+  .db STI,19,SL1,A0,SL3,A0,STI,12,SL4,A2,SL5,C3,STI,19,SL3,A0,STI,12
+  .db SL6,D3,E3,SL4,AS2,SL8,G3,SL4,F3,SLB,E3,STI,19,SL1,A0,STI,12
+  .db SL4,D3,DS3
+  .db RET
+
+_mus_tcrf_square2_3:
+  .db STI,12,SL4,E3,C3,A2,SL8,C3,SL4,C3,D3,C3,DS3,C3,GS2,SL8,C3
+  .db SL4,GS2,AS2,GS2
+  .db RET
+
+_mus_tcrf_square2_4:
+  .db STI,12,SL7,G2,STI,19,SL1,A0,STI,12,SL7,G3,STI,19,SL1,A0,STI,12
+  .db SL4,F3,SL8,E3,D3,SL4,E3,C3,SL8,GS2,SL4,AS2,SL8,GS2
   .db RET
 
 _mus_tcrf_triangle_0:
@@ -270,15 +336,51 @@ _mus_tcrf_triangle_4:
   .db RET
 
 _mus_tcrf_triangle_5:
-  .db STI,19,SLL,64,A0
+  .db STI,2,SL3,G2,STI,19,SL1,A0,STI,3,SL8,G2,STI,2,E2,G2,SL4
+  .db E2,SL3,D2,STI,19,SL1,A0,STI,3,SL8,D2,STI,2,G2,A2,SL4,B2
   .db RET
 
 _mus_tcrf_noise_0:
-  .db STI,4,SL4,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14
+  .db STI,4,SL4,14,14,STI,14,9,STI,4,14,14,14,14,14,14,14,STI,14
+  .db 9,STI,4,14,14,14,14,14
   .db RET
 
 _mus_tcrf_noise_1:
-  .db STI,4,SL4,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14
+  .db STI,4,SL4,14,14,STI,14,9,STI,4,14,14,14,14,14,14,14,STI,14
+  .db 9,STI,4,14,14,SL2,15,15,STI,6,15,15,14,14
+  .db RET
+
+_mus_tcrf_noise_2:
+  .db STI,4,SL4,14,14,STI,14,9,STI,4,14,14,14,14,14,14,14,STI,14
+  .db 9,STI,4,14,14,SL2,15,15,STI,6,15,15,14,14
+  .db RET
+
+_mus_totaka:
+  .db 0
+  .db 5
+  .db 42
+  .db 4
+  .dw _mus_totaka_square1
+  .dw 0
+  .dw 0
+  .dw 0
+  .dw 0
+
+_mus_totaka_square1:
+_mus_totaka_square1_loop:
+  .db CAL,<(_mus_totaka_square1_0),>(_mus_totaka_square1_0)
+  .db CAL,<(_mus_totaka_square1_1),>(_mus_totaka_square1_1)
+  .db GOT
+  .dw _mus_totaka_square1_loop
+
+_mus_totaka_square1_0:
+  .db STI,3,SL6,C3,SL1,C3,D3,SL5,E3,SL3,D3,SL8,C3,G3,E3,C4,SL0
+  .db G3
+  .db RET
+
+_mus_totaka_square1_1:
+  .db STI,3,SL6,G3,SL1,G3,GS3,SL5,G3,SL3,FS3,SL0,DS3,SLC,D3,G3
+  .db SL8,C3
   .db RET
 
 _sfx_null:
