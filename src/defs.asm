@@ -22,6 +22,10 @@ ControllerInput_B      = %01000000
 ControllerInput_A      = %10000000
 
 ; -----------------------------------------------
+; Secret things...?
+CheatCode_PooChallenge	= ControllerInput_B | ControllerInput_A | ControllerInput_Down
+
+; -----------------------------------------------
 ; Sprite stuff
 SpriteAttrib_Palette0  = %00000000
 SpriteAttrib_Palette1  = %00000001
