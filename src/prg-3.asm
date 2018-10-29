@@ -54,6 +54,15 @@ Start:
 	DelayFrames #118					; Wait more (8-bit, bah!)
 	TextScript TScript_DateOfBirth		; Show the dates now
 
+	; Let's wait a few seconds...
+	;DelayFrames #240					; 4 seconds
+	;DelayFrames #240					; 4 seconds
+	;DelayFrames #120					; 2 seconds
+	; someone please explain to me why, when debugging,
+	; i am intentionally inserting 10 second waits
+	; instead of just testing if it works first
+	; im coder
+	JSR SlideScreenUpwards
 
 	JMP DoNothing
 
@@ -251,6 +260,50 @@ UpdatePRNG:
 	STA PRNGSeed
 	CMP #0     ; reload flags
 	RTS
+
+
+
+
+;
+; Slides the screen (and the cactus overlay sprites) up and off the
+; visible screen area. Could probably be cleaned up as it scrolls up too
+; but that's too much effort for right now
+;
+SlideScreenUpwards:
+	; Get current Y scroll position
+	INC PPUScrollY
+	LDA PPUScrollY				; Check if it's still within range
+	CMP #$EF					; Beyond #$EF = rolls over, oops
+	BEQ ++						; So if we're at #$EF we're done
+
+	; Update all the cactus sprites
+	LDX #$9C					; Offset of first overlay sprite
+
+-	LDA SpriteDMAArea, X		; Load the sprite Y position
+	CMP #$F8					; Are we at the bottom already?
+	BEQ +						; Yeah, skip this one
+	DEC SpriteDMAArea, X		; Otherwise nudge up down by one
++	INX							; Move to next sprite's Y position
+	INX
+	INX
+	INX
+	BNE -						; Done updating sprites
+
+	; Done updating sprites and nametable, wait a frame
+	JSR WaitForNMI
+	JMP SlideScreenUpwards
+
+++	RTS							; Screen should be scrolled now! Bye!!
+
+
+
+
+
+
+
+
+
+
 
 
 ; -----------------------------------------------
