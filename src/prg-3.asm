@@ -23,7 +23,10 @@ Start:
 	JSR DrawCactus
 	JSR AddCactusSprites
 
-	SetPPUBuffer Palette_Main			; Set up to write our main pal
+	SetPPUBuffer Palette_Main			; Update our fancy palettes
+	JSR UpdatePPUFromBuffer
+
+	SetPPUBuffer Palette_Fade0			; Then manually blank some colors
 
 	JSR EnableNMI						; Enable NMIs and wait
 	JSR WaitForNMI						; (loads initial palette)
@@ -55,7 +58,7 @@ Start:
 	TextScript TScript_DateOfBirth		; Show the dates now
 
 	; Let's wait a few seconds...
-	;DelayFrames #240					; 4 seconds
+	DelayFrames #120					; 2 seconds
 	;DelayFrames #240					; 4 seconds
 	;DelayFrames #120					; 2 seconds
 	; someone please explain to me why, when debugging,
@@ -63,6 +66,35 @@ Start:
 	; instead of just testing if it works first
 	; im coder
 	JSR SlideScreenUpwards
+
+	; ----------------------------------------------------
+	; Clearing the page of all the art and text, because... yeah
+	JSR DisablePPURendering		; And that pesky PPU too
+	JSR WaitForNMI
+	JSR DisableNMI				; Turn off NMI while we're busy
+
+	JSR ClearNametables			; Clear out the cacti and attribs
+
+	SetPPUBuffer Palette_Main			; Set up to write our main pal
+
+	LDA #$00
+	STA PPUScrollY
+
+
+	JSR EnablePPURendering				; now turn on the PPU proper
+	JSR EnableNMI						; Enable NMIs and wait
+
+	JSR PutSpritesBehindBackground
+
+	JSR WaitForNMI						; (loads initial palette)
+	; OK, all done -- we have a clean slate again, more or less
+	; ----------------------------------------------------
+
+
+	; Temp draw some text to make sure we haven't fucked it all up again
+	TextScript TScript_Milestones
+
+
 
 	JMP DoNothing
 
@@ -294,7 +326,6 @@ SlideScreenUpwards:
 	JMP SlideScreenUpwards
 
 ++	RTS							; Screen should be scrolled now! Bye!!
-
 
 
 

@@ -37,37 +37,93 @@ TScript_DateOfBirth:
 	TS_Text "2002"
 	TS_End
 
-TScript_Test:
-	.db TextScript_NewAddress, $20, $a1
-	.db TextScript_ChangeSpeed, 2
-	.db "Some sample text for the new"
-	.db TextScript_DoDelay, 20
-	.db TextScript_NewAddress, $20, $e1
-	.db TextScript_ChangeSpeed, 5
-	.db "'Text Script System'. "
-	.db TextScript_DoDelay, 90
-	.db TextScript_ChangeSpeed, 45
-	.db "..."
-	.db TextScript_ChangeSpeed, 2
-	.db "yep."
-	.db TextScript_NewAddress, $21, $21
-	.db TextScript_DoDelay, 60
-	.db "It can type"
-	.db TextScript_ChangeSpeed, 40
-	.db " slow"
-	.db TextScript_ChangeSpeed, 10
-	.db ", or "
-	.db TextScript_ChangeSpeed, 1
-	.db "fast."
-	.db TextScript_DoDelay, 30
-	.db TextScript_NewAddress, $21, $61
-	.db TextScript_ChangeSpeed, 2
-	.db "It can pause, too."
-	.db TextScript_DoDelay, 120
-	.db TextScript_ChangeSpeed, 3
-	.db " Like that."
-	.db TextScript_DoDelay, 180
-	.db TextScript_ChangeSpeed, 1
-	.db TextScript_NewAddress, $21, $c1
-	.db "I think it's pretty neat."
-	.db TextScript_End
+
+TScript_Milestones:
+	TS_NewPos 2, 7
+	TS_Speed 5
+	TS_Text "- TCRF Releases -"
+	TS_Delay 60
+	TS_NewPos 4, 2
+	TS_Speed 1
+
+	TS_Text "December 2010"
+	TS_NewLine
+	TS_Delay 20
+	; ScrSz]]----------------------------[[
+	TS_Text "  The Legend of Zelda proto"
+	TS_Delay 60
+	TS_NewLine
+	TS_NewLine
+
+	TS_Text "October 2012"
+	TS_NewLine
+	TS_Delay 20
+	TS_Text "  'Virus' and other various"
+	TS_NewLine
+	TS_Text "  Dr. Mario prototypes"
+	TS_Delay 60
+	TS_NewLine
+	TS_NewLine
+
+	TS_Text "April 2014"
+	TS_NewLine
+	TS_Delay 20
+	TS_Text "  Monster In My Pocket"
+	TS_NewLine
+	TS_Text "  early sample/demo"
+	TS_Delay 60
+	TS_NewLine
+	TS_NewLine
+
+	TS_Text "June 2016"
+	TS_NewLine
+	TS_Delay 20
+	TS_Text "  THQ's cancelled Tetris DS"
+	TS_NewLine
+	TS_Text "  and its design documents"
+	; ScrSz]]----------------------------[[
+	TS_Delay 60
+	TS_NewLine
+	TS_NewLine
+
+	TS_Text "March 2018"
+	TS_NewLine
+	TS_Delay 20
+	TS_Text "  Ms. Pac-Man nightmare fuel"
+
+	TS_NewPos 20, 16
+	TS_Text "SNES prototype"
+	TS_NewPos 22, 2
+	; ScrSz]]----------------------------[[
+	TS_Delay 60
+
+	TS_Text "April 2018"
+	TS_NewLine
+	TS_Delay 20
+	TS_Text "  Air Fortress FDS prototype"
+	; ScrSz]]----------------------------[[
+	TS_Delay 60
+	TS_NewLine
+	TS_NewLine
+
+	TS_Text "June 2018"
+	TS_NewLine
+	TS_Delay 20
+	TS_Text "  Pokemon Gold and Silver"
+	TS_NewLine
+	TS_Text "  Spaceworld 1997 demo"
+	; ScrSz]]----------------------------[[
+	TS_Delay 60
+	TS_NewLine
+	TS_NewLine
+
+	TS_End
+
+	; December 2010 - Zelda 1 FDS
+	; October 2012 - Virus (Dr. Mario)
+	; April 2014 - Monster in my Pocket
+	; June 2016 - THQ Tetris DS
+	; March 2018 - Ms. Pac-Man
+	; April 2018 - Air Fortress
+	; June 2018 - Pokemon Gold/Silver
+	; October 2018 - Rockman X2 early

@@ -100,6 +100,23 @@ ClearSprites:
 
 
 ;
+; Put all sprites behind the background
+; for easier readability of text
+;
+PutSpritesBehindBackground:
+	LDY #$00				; Sprite index
+-	DEY
+	DEY
+	LDA SpriteDMAArea, Y
+	ORA #SpriteAttrib_Priority
+	STA SpriteDMAArea, Y
+	DEY
+	DEY
+	BNE -					; Loop until we set all priorities
+	RTS
+
+
+;
 ; Set the default PPU stuff we'll be using here (but leave NMI off)
 ;
 SetUpPPU:
