@@ -126,6 +126,49 @@ ClearSprites:
 	RTS
 
 
+; Clears one row of tiles in yon nametable
+; In: A=Row number, X = tile to copy?
+ClearOneTileRow:
+	; Row value as A; 80 = second nametable, other values = row num
+	PHA						; Save A for later
+	LDA #$02				; Hi PPU address (pre shift)
+	STA TempAddrHi
+	LDA #$00
+	STA TempAddrLo
+
+	; Set high address by shifting off top bit of row number
+	PLA						; Restore A
+	ASL						; Shift C < A < 0
+	ROL TempAddrHi			; Shift x < M < C
+
+	; Get address for row
+	ASL 					; Shift left 4 times
+	ASL
+	ROL TempAddrHi			; Shift x < M < C
+	ASL
+	ROL TempAddrHi			; Shift x < M < C
+	ASL
+	ROL TempAddrHi			; Shift x < M < C
+	STA TempAddrLo			; Now has PPU base address
+
+	; Repurpose the textscript addresses (uh oh)
+	LDA TempAddrHi
+	STA TextScriptPPUHi
+	LDA TempAddrLo
+	STA TextScriptPPULo
+	STX TextScriptPPUChar
+	LDA #$20
+	STA TextScriptPPULen
+	LDA #<TextScriptPPUHi
+	STA PPUBufferLo
+	LDA #>TextScriptPPUHi
+	STA PPUBufferHi
+	LDA #$02
+	STA PPUBufferReady
+
+	; Let the thing do the thing
+	RTS
+
 ;
 ; Put all sprites behind the background
 ; for easier readability of text

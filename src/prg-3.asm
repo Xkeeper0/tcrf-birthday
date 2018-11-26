@@ -67,22 +67,34 @@ Start:
 	; im coder
 	JSR SlideScreenUpwards
 
+	; Clear out the attribute tiles
+	; The text was cleared out by SlideScreenUpwards
+	LDX #$00
+	LDA #$1E
+	JSR ClearOneTileRow
+	JSR WaitForNMI
+	LDX #$00
+	LDA #$1F
+	JSR ClearOneTileRow
+	JSR WaitForNMI
+
+
 	; ----------------------------------------------------
 	; Clearing the page of all the art and text, because... yeah
-	JSR DisablePPURendering		; And that pesky PPU too
-	JSR WaitForNMI
-	JSR DisableNMI				; Turn off NMI while we're busy
+	;JSR DisablePPURendering		; And that pesky PPU too
+	;JSR WaitForNMI
+	;JSR DisableNMI				; Turn off NMI while we're busy
 
-	JSR ClearNametables			; Clear out the cacti and attribs
+	;JSR ClearNametables			; Clear out the cacti and attribs
 
-	SetPPUBuffer Palette_Main			; Set up to write our main pal
+	;SetPPUBuffer Palette_Main			; Set up to write our main pal
 
 	LDA #$00
 	STA PPUScrollY
 
 
-	JSR EnablePPURendering				; now turn on the PPU proper
-	JSR EnableNMI						; Enable NMIs and wait
+	;JSR EnablePPURendering				; now turn on the PPU proper
+	;JSR EnableNMI						; Enable NMIs and wait
 
 	JSR PutSpritesBehindBackground
 
@@ -303,13 +315,32 @@ UpdatePRNG:
 ;
 SlideScreenUpwards:
 	; Get current Y scroll position
-	INC PPUScrollY
+	; AND low 3 bytes (8 pixels)
+	; if != 0, do nothing
+	; otherwise, calc what ppu row to erase
 	LDA PPUScrollY				; Check if it's still within range
+	AND #%00000111				; Mask off only the low 3 bits (0-7)
+	CMP #$00					; Are we at an even pixel row?
+	BNE +						; If not, skip this part
+
+	; Erase tiles with stuff
+	LDA PPUScrollY				; Reload the scroll buffer
+	AND #%11111000				; Now mask off the OTHER bits!
+	LSR							; Shift right for our new address
+	LSR
+	LSR
+	LDX #$00
+	JSR ClearOneTileRow			; Clear our row of tiles here...
+
+	; Get current Y scroll position
+	; Check if we should continue scrolling
++	LDA PPUScrollY				; Check if it's still within range
 	CMP #$EF					; Beyond #$EF = rolls over, oops
 	BEQ ++						; So if we're at #$EF we're done
+	INC PPUScrollY
 
 	; Update all the cactus sprites
-	LDX #$9C					; Offset of first overlay sprite
++	LDX #$9C					; Offset of first overlay sprite
 
 -	LDA SpriteDMAArea, X		; Load the sprite Y position
 	CMP #$F8					; Are we at the bottom already?

@@ -34,6 +34,7 @@ ENDM
 ;
 MACRO DelayFrames f
 	LDX f
+	;LDX #2
 	JSR WaitXFrames
 ENDM
 
