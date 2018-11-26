@@ -30,6 +30,9 @@ DoTextScript:
 	STA PPUBufferLo
 	LDA #>TextScriptPPUHi
 	STA PPUBufferHi
+	LDA #$2
+	STA PPUBufferReady
+
 
 	LDX TextScriptSpeed				; Wait frames as required
 	JSR WaitXFrames

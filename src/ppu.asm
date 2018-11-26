@@ -14,8 +14,36 @@ DisablePPURendering:
 	RTS
 
 
+; Keep the same PPU reading address, but read the buffer in a different way
+; This one uses four bytes (hi, lo, len, byte), and copies the same byte
+; repeatedly instead of reading. it also only does one 'update' ever
+UpdatePPUFaster:
+	LDY #$00
+	LDA (PPUBufferLo), Y		; Get high address...
+	LDX PPUSTATUS				; Clear address latch
+	STA PPUADDR					; ... store high address
+	INY
+	LDA (PPUBufferLo), Y		; Get low address...
+	STA PPUADDR					; .. store it
+	INY
+	LDA (PPUBufferLo), Y		; Get length
+	TAX							; X = bytes to write
+	INY
+	LDA (PPUBufferLo), Y		; Load the byte to write here
+
+-	STA PPUDATA					; ...store into PPU
+	DEX							; Decrement bytes left
+	BNE -						; If we're not done, continue
+
+	LDA #$00					; Mark the buffer as being done with
+	STA PPUBufferReady
+	RTS							; Done!
+
+
 ; PPUBufferLo / Hi: Address of PPU data to read from
 UpdatePPUFromBuffer:
+	CMP #$02
+	BEQ UpdatePPUFaster
 	LDY #$00
 --	LDA (PPUBufferLo), Y		; Get high address...
 	BEQ +						; No buffer now, just leave
@@ -38,8 +66,7 @@ UpdatePPUFromBuffer:
 	JMP --						; Otherwise, we're done; check for more data
 
 +	LDA #$00					; Mark the buffer as being done with
-	STA PPUBufferLo
-	STA PPUBufferHi
+	STA PPUBufferReady
 	RTS							; Done!
 
 

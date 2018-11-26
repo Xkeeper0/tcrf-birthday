@@ -25,6 +25,8 @@ MACRO SetPPUBuffer addr
 	STA PPUBufferLo
 	LDA #>addr
 	STA PPUBufferHi
+	LDA #$1
+	STA PPUBufferReady
 ENDM
 
 ;

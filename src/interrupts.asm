@@ -36,13 +36,11 @@ NMI:
 	STA OAM_DMA
 
 	; Do PPU writes if needed
-	LDA PPUBufferHi
-	BNE +
-	LDA PPUBufferLo
-	BEQ ++
-+	JSR UpdatePPUFromBuffer
+	LDA PPUBufferReady
+	BEQ +
+	JSR UpdatePPUFromBuffer
 
-++	LDA PPUScrollX
++	LDA PPUScrollX
 	STA PPUSCROLL
 	LDA PPUScrollY
 	STA PPUSCROLL
