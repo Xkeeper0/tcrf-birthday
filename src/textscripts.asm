@@ -89,10 +89,10 @@ TScript_Milestones:
 	TS_Text "March 2018"
 	TS_NewLine
 	TS_Delay 20
-	TS_Text "  Ms. Pac-Man nightmare fuel"
-
-	TS_NewPos 20, 16
-	TS_Text "SNES prototype"
+	TS_Text "  Ms. Pac-Man SNES prototype"
+;	TS_Text "  Ms. Pac-Man nightmare fuel"
+;	TS_NewPos 20, 16
+;	TS_Text "SNES prototype"
 	TS_NewPos 22, 2
 	; ScrSz]]----------------------------[[
 	TS_Delay 60
