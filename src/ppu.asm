@@ -151,17 +151,17 @@ ClearOneTileRow:
 	ROL TempAddrHi			; Shift x < M < C
 	STA TempAddrLo			; Now has PPU base address
 
-	; Repurpose the textscript addresses (uh oh)
+	; Save these to our little four-byte buffer for PPU stuff
 	LDA TempAddrHi
-	STA TextScriptPPUHi
+	STA ClearRowPPUHi
 	LDA TempAddrLo
-	STA TextScriptPPULo
-	STX TextScriptPPUChar
+	STA ClearRowPPULo
+	STX ClearRowPPUChar
 	LDA #$20
-	STA TextScriptPPULen
-	LDA #<TextScriptPPUHi
+	STA ClearRowPPULen
+	LDA #<ClearRowPPUHi
 	STA PPUBufferLo
-	LDA #>TextScriptPPUHi
+	LDA #>ClearRowPPUHi
 	STA PPUBufferHi
 	LDA #$02
 	STA PPUBufferReady

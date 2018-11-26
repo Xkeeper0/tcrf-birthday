@@ -9,6 +9,8 @@ DoTextScript:
 	JSR DoTextScript_GetNextByte
 
 	; Based on A, do things
+	; @TODO this would probably make for a nice
+	; jump table in the future, since it's a little. oof. yikes.
 	CMP #TextScript_End				; If the next byte is terminating, done
 	BEQ DoTextScript_End
 
@@ -23,6 +25,9 @@ DoTextScript:
 
 	CMP #TextScript_AdvanceLine		; Advance one line downwards
 	BEQ DoTextScript_AdvanceLine
+
+	CMP #TextScript_Scroll			; Time to scroll down some
+	BEQ DoTextScript_Scroll
 
 	; Nothing, guess we're drawing another character.
 	STA TextScriptPPUChar
@@ -93,3 +98,18 @@ DoTextScript_GetNextByte:
 	BNE +
 	INC TextScriptHi		; Update high byte if overflow
 +	RTS
+
+DoTextScript_Scroll:
+	; Scroll 8 pixels ...
+	LDX #$08						; Scroll up for 8 frames, one pixel/fr
+	STX FramesToWait
+-	JSR WaitForNMI
+	INC PPUScrollY
+	DEC FramesToWait
+	BNE -
+	JSR DoTextScript_GetNextByte	; Assume next byte = line to clear
+	LDX #$00						; then clear that line
+	JSR ClearOneTileRow
+	JSR WaitForNMI
+
+	JMP DoTextScript

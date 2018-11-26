@@ -60,6 +60,11 @@ SpriteX			= $203
 ; Sound engine (non-zero-page) requirements
 .include "src/music/engine/ggsound-ram.asm"
 
+; Used for the clear-one-tile-row function because im lazy
+ClearRowPPUHi:		.dsb 1
+ClearRowPPULo:		.dsb 1
+ClearRowPPULen:		.dsb 1
+ClearRowPPUChar:	.dsb 1
 
 
 ; --------------------------------------

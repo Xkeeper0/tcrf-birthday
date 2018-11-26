@@ -51,6 +51,8 @@ TScript_Milestones:
 	TS_Delay 20
 	; ScrSz]]----------------------------[[
 	TS_Text "  The Legend of Zelda proto"
+	TS_NewLine
+	TS_Text "  (with Lost Levels)"
 	TS_Delay 60
 	TS_NewLine
 	TS_NewLine
@@ -61,6 +63,8 @@ TScript_Milestones:
 	TS_Text "  'Virus' and other various"
 	TS_NewLine
 	TS_Text "  Dr. Mario prototypes"
+	TS_NewLine
+	TS_Text "  (with Dream and Friends)"
 	TS_Delay 60
 	TS_NewLine
 	TS_NewLine
@@ -89,11 +93,10 @@ TScript_Milestones:
 	TS_Text "March 2018"
 	TS_NewLine
 	TS_Delay 20
-	TS_Text "  Ms. Pac-Man SNES prototype"
-;	TS_Text "  Ms. Pac-Man nightmare fuel"
-;	TS_NewPos 20, 16
-;	TS_Text "SNES prototype"
-	TS_NewPos 22, 2
+	TS_Text "  Ms. Pac-Man nightmare fuel"
+	TS_NewPos 22, 16
+	TS_Text "SNES prototype"
+	TS_NewPos 24, 2
 	; ScrSz]]----------------------------[[
 	TS_Delay 60
 
@@ -108,14 +111,49 @@ TScript_Milestones:
 
 	TS_Text "June 2018"
 	TS_NewLine
+	TS_Scroll 0
 	TS_Delay 20
 	TS_Text "  Pokemon Gold and Silver"
 	TS_NewLine
+	TS_Scroll 1
 	TS_Text "  Spaceworld 1997 demo"
+	TS_Scroll 2
+	TS_NewPos #$40, 2
+	TS_Text "  (with Team Spaceworld)"
+	; ScrSz]]----------------------------[[
+
+	TS_Delay 60
+
+	TS_NewPos #$42, 2
+
+	TS_Scroll 3
+	TS_Scroll 4
+	TS_Text "October 2018"
+	TS_NewLine
+	TS_Delay 20
+	TS_Scroll 5
+	TS_Text "  Rockman X2 early demo"
+	TS_NewLine
+	TS_Scroll 6
+	TS_Text "  (with Rockman Corner)"
 	; ScrSz]]----------------------------[[
 	TS_Delay 60
 	TS_NewLine
 	TS_NewLine
+
+	TS_Scroll 7
+	TS_Scroll 8
+	TS_Delay 20
+	TS_Text "The Future"
+	TS_NewLine
+	TS_Delay 20
+	TS_Scroll 9
+	TS_Speed 3
+	TS_Text "  With your support,"
+	TS_NewLine
+	TS_Delay 20
+	TS_Scroll 10
+	TS_Text "  who knows what's next..."
 
 	TS_End
 

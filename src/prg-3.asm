@@ -106,7 +106,39 @@ Start:
 	; Temp draw some text to make sure we haven't fucked it all up again
 	TextScript TScript_Milestones
 
+	DelayFrames #180					; Five seconds or so
+	DelayFrames #120
 
+	SetPPUBuffer Palette_TextFade3		; Fade out text...
+	DelayFrames #10
+
+	SetPPUBuffer Palette_TextFade2		; Fade out text...
+	DelayFrames #10
+
+	SetPPUBuffer Palette_TextFade1		; Fade out text...
+	DelayFrames #10
+
+	SetPPUBuffer Palette_TextFade0		; Fade out text...
+	JSR WaitForNMI
+
+	LDA #$1D
+	STA FramesToWait
+-	LDA FramesToWait
+	JSR ClearOneTileRow
+	JSR WaitForNMI
+	DEC FramesToWait
+	BPL -
+
+	LDA #$8A
+	STA FramesToWait
+-	LDA FramesToWait
+	JSR ClearOneTileRow
+	JSR WaitForNMI
+	DEC FramesToWait
+	BMI -
+
+	DelayFrames #240					; (actually fully bright now)
+	; Hey, all done with that now! wowzers
 
 	JMP DoNothing
 

@@ -46,3 +46,28 @@ Palette_Fade4:
 	.db $3F, $05, $03, $09, $19, $38 ; BG 1
 	.db $3F, $11, $03, $08, $29, $38 ; SP 0
 	.db $00 ; End
+
+
+Palette_TextFade0:
+	;   PPU Addr  Len
+	.db $3F, $00, $4
+	.db $0F, $0F, $0F, $0F ; BG 0
+	.db $00 ; End
+
+Palette_TextFade1:
+	;   PPU Addr  Len
+	.db $3F, $00, $4
+	.db $0F, $0F, $0F, $00 ; BG 0
+	.db $00 ; End
+
+Palette_TextFade2:
+	;   PPU Addr  Len
+	.db $3F, $00, $4
+	.db $0F, $0F, $00, $10 ; BG 0
+	.db $00 ; End
+
+Palette_TextFade3:
+	;   PPU Addr  Len
+	.db $3F, $00, $4
+	.db $0F, $00, $10, $30 ; BG 0
+	.db $00 ; End

@@ -65,6 +65,10 @@ MACRO TS_Speed s
 	.db TextScript_ChangeSpeed, s
 ENDM
 
+MACRO TS_Scroll l
+	.db TextScript_Scroll, l
+ENDM
+
 MACRO TS_Text s
 	.db s
 ENDM

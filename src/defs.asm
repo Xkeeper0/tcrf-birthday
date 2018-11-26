@@ -4,6 +4,7 @@ HMirror = $01
 NametableMapping = $A000
 
 
+TextScript_Scroll       = $FA
 TextScript_AdvanceLine  = $FB
 TextScript_NewAddress   = $FC
 TextScript_ChangeSpeed  = $FD
