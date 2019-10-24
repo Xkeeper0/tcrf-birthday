@@ -137,8 +137,15 @@ Start:
 	DEC FramesToWait
 	BMI -
 
-	DelayFrames #240					; (actually fully bright now)
+	LDA #0
+	STA PPUScrollY
+	SetPPUBuffer Palette_TextFade3		; Fade out text...
+	JSR WaitForNMI
+	;DelayFrames #240					; (actually fully bright now)
 	; Hey, all done with that now! wowzers
+
+	TextScript TScript_ComingSoon
+
 
 	JMP DoNothing
 

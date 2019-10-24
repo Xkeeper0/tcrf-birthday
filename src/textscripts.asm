@@ -111,8 +111,8 @@ TScript_Milestones:
 
 	TS_Text "June 2018"
 	TS_NewLine
-	TS_Scroll 0
 	TS_Delay 20
+	TS_Scroll 0
 	TS_Text "  Pokemon Gold and Silver"
 	TS_NewLine
 	TS_Scroll 1
@@ -157,11 +157,15 @@ TScript_Milestones:
 
 	TS_End
 
-	; December 2010 - Zelda 1 FDS
-	; October 2012 - Virus (Dr. Mario)
-	; April 2014 - Monster in my Pocket
-	; June 2016 - THQ Tetris DS
-	; March 2018 - Ms. Pac-Man
-	; April 2018 - Air Fortress
-	; June 2018 - Pokemon Gold/Silver
-	; October 2018 - Rockman X2 early
+
+
+TScript_ComingSoon:
+	TS_NewPos 12, 4
+	TS_Speed 1
+	TS_Text "  coming soon probably  "
+	TS_Delay 95
+	TS_Speed 1
+	TS_NewLine
+	TS_NewLine
+	TS_Text "like, eventually. really"
+	TS_End
