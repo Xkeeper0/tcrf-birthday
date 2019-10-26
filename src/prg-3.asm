@@ -50,7 +50,6 @@ Start:
 	SetPPUBuffer Palette_Fade4			; BRIGHTER!!!!
 	DelayFrames #90					; (actually fully bright now)
 
-	JMP +
 
 	TextScript TScript_HappyBirthday	; Announce birthday
 	INC FunfettiEnable					; Turn on the funfetti
@@ -66,7 +65,7 @@ Start:
 	; i am intentionally inserting 10 second waits
 	; instead of just testing if it works first
 	; im coder
-+	JSR SlideScreenUpwards
+	JSR SlideScreenUpwards
 
 	; Clear out the attribute tiles
 	; The text was cleared out by SlideScreenUpwards
@@ -103,6 +102,22 @@ Start:
 	; OK, all done -- we have a clean slate again, more or less
 	; ----------------------------------------------------
 
+	TextScript TScript_Credits
+	LDX #$00
+	LDA #$05
+	STA FramesToWait
+-	LDA FramesToWait
+	JSR ClearOneTileRow
+	JSR WaitForNMI
+	INC FramesToWait
+	LDA FramesToWait
+	CMP #$1C
+	BNE -
+
+	TextScript TScript_Credits2
+
+	JSR FuckThisIsGonnaBeLateAgain
+
 	;JMP +
 	; Temp draw some text to make sure we haven't fucked it all up again
 	TextScript TScript_Milestones
@@ -110,49 +125,21 @@ Start:
 	DelayFrames #180					; Five seconds or so
 	DelayFrames #120
 
-	SetPPUBuffer Palette_TextFade3		; Fade out text...
-	DelayFrames #10
+	JSR FuckThisIsGonnaBeLateAgain
 
-	SetPPUBuffer Palette_TextFade2		; Fade out text...
-	DelayFrames #10
-
-	SetPPUBuffer Palette_TextFade1		; Fade out text...
-	DelayFrames #10
-
-	SetPPUBuffer Palette_TextFade0		; Fade out text...
-	JSR WaitForNMI
-
-	LDA #$1D
-	STA FramesToWait
--	LDA FramesToWait
-	JSR ClearOneTileRow
-	JSR WaitForNMI
-	DEC FramesToWait
-	BPL -
-
-	LDA #$8A
-	STA FramesToWait
--	LDA FramesToWait
-	JSR ClearOneTileRow
-	JSR WaitForNMI
-	DEC FramesToWait
-	BMI -
-
-	LDA #0
-	STA PPUScrollY
-	SetPPUBuffer Palette_TextFade3		; Fade out text...
-	JSR WaitForNMI
 	;DelayFrames #240					; (actually fully bright now)
 
 +	; Temp draw some text to make sure we haven't fucked it all up again
 	TextScript TScript_Milestones2
 
 
-	;DelayFrames #240
+	DelayFrames #240
+
+	JSR FuckThisIsGonnaBeLateAgain
 
 	; Hey, all done with that now! wowzers
 
-	;TextScript TScript_ComingSoon
+	TextScript TScript_ComingSoon
 
 
 	JMP DoNothing
@@ -166,9 +153,14 @@ Start:
 ;
 DoNothing:
 	JSR WaitForNMI
+	LDA FunfettiSpeed				; Did we already do this code?
+	BEQ +							; If yes, don't bother checking again
 	JMP DoNothing
 
-
++	DelayFrames #240
+	TextScript TScript_PooChallenge
+-	JSR WaitForNMI
+	JMP -
 
 
 
@@ -408,6 +400,40 @@ SlideScreenUpwards:
 
 
 
+FuckThisIsGonnaBeLateAgain:
+	SetPPUBuffer Palette_TextFade3		; Fade out text...
+	DelayFrames #10
+
+	SetPPUBuffer Palette_TextFade2		; Fade out text...
+	DelayFrames #10
+
+	SetPPUBuffer Palette_TextFade1		; Fade out text...
+	DelayFrames #10
+
+	SetPPUBuffer Palette_TextFade0		; Fade out text...
+	JSR WaitForNMI
+
+	LDA #$1D
+	STA FramesToWait
+-	LDA FramesToWait
+	JSR ClearOneTileRow
+	JSR WaitForNMI
+	DEC FramesToWait
+	BPL -
+
+	LDA #$8A
+	STA FramesToWait
+-	LDA FramesToWait
+	JSR ClearOneTileRow
+	JSR WaitForNMI
+	DEC FramesToWait
+	BMI -
+
+	LDA #0
+	STA PPUScrollY
+	SetPPUBuffer Palette_TextFade3		; Fade out text...
+	JSR WaitForNMI
+	RTS
 
 
 
