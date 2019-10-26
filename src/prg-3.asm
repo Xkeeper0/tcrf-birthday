@@ -31,12 +31,12 @@ Start:
 	JSR EnableNMI						; Enable NMIs and wait
 	JSR WaitForNMI						; (loads initial palette)
 	JSR EnablePPURendering				; now turn on the PPU proper
-	DelayFrames #60						; then wait a second
+	DelayFrames #30						; then wait a second
 
 	LDA #song_index_mus_tcrf			; Play our cool song
 	STA sound_param_byte_0
 	JSR play_song
-	DelayFrames #240
+	DelayFrames #140
 
 	SetPPUBuffer Palette_Fade1			; Fade in the cactus
 	DelayFrames #10
@@ -48,8 +48,9 @@ Start:
 	DelayFrames #10
 
 	SetPPUBuffer Palette_Fade4			; BRIGHTER!!!!
-	DelayFrames #240					; (actually fully bright now)
+	DelayFrames #90					; (actually fully bright now)
 
+	JMP +
 
 	TextScript TScript_HappyBirthday	; Announce birthday
 	INC FunfettiEnable					; Turn on the funfetti
@@ -58,14 +59,14 @@ Start:
 	TextScript TScript_DateOfBirth		; Show the dates now
 
 	; Let's wait a few seconds...
-	DelayFrames #120					; 2 seconds
-	;DelayFrames #240					; 4 seconds
+	DelayFrames #240					; 4 seconds
+	DelayFrames #145					; 4 seconds
 	;DelayFrames #120					; 2 seconds
 	; someone please explain to me why, when debugging,
 	; i am intentionally inserting 10 second waits
 	; instead of just testing if it works first
 	; im coder
-	JSR SlideScreenUpwards
++	JSR SlideScreenUpwards
 
 	; Clear out the attribute tiles
 	; The text was cleared out by SlideScreenUpwards
@@ -102,7 +103,7 @@ Start:
 	; OK, all done -- we have a clean slate again, more or less
 	; ----------------------------------------------------
 
-
+	;JMP +
 	; Temp draw some text to make sure we haven't fucked it all up again
 	TextScript TScript_Milestones
 
@@ -142,9 +143,16 @@ Start:
 	SetPPUBuffer Palette_TextFade3		; Fade out text...
 	JSR WaitForNMI
 	;DelayFrames #240					; (actually fully bright now)
+
++	; Temp draw some text to make sure we haven't fucked it all up again
+	TextScript TScript_Milestones2
+
+
+	;DelayFrames #240
+
 	; Hey, all done with that now! wowzers
 
-	TextScript TScript_ComingSoon
+	;TextScript TScript_ComingSoon
 
 
 	JMP DoNothing
