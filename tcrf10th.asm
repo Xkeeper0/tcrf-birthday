@@ -1,12 +1,16 @@
-; tcrf9yrs.nes
+; tcrf10th.nes
 ; ============
-; TCRF 9 year birthday ROM
-; Maybe it'll even be done in time!
+; TCRF 10th year birthday ROM
+; Started as the 9th birthday but, uh, well
 ;
-; The Cutting Room Floor wiki turns 9 years old
-; on October 25, 2018
+; The Cutting Room Floor wiki turned 10 years old
+; on October 25, 2019
 ; The actual website itself is much older, but
 ; nobody is quiiiite sure when it started...
+;
+; This project was started for the 9th birthday,
+; but got delayed and ended up just kinda collecting dust
+; until late 2019, when it was polished up for the 10th
 
 
 ; -----------------------------------------
@@ -59,4 +63,4 @@
 
 ; -----------------------------------------
 ; include CHR-ROM
-.incbin "src/tcrf9yrs.chr"
+.incbin "src/tcrf10th.chr"

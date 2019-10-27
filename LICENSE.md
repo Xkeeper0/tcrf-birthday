@@ -5,8 +5,10 @@ The GGSound engine and its supporting files are distributed as a public domain
 work; see [the GGSound repository](https://github.com/gradualgames/ggsound/)
 for details.
 
-The 6502 assembly code, the music, and the graphics used in this project
-are licensed under the MIT license.
+
+
+All other 6502 assembly code, music, and graphics used in this project
+are original creations, and are licensed under the MIT license.
 
 The MIT License (MIT)
 ---------------------

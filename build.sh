@@ -1,2 +1,2 @@
 #!/bin/bash
-tools/asm6f tcrf9yrs.asm bin/tcrf9yrs.nes
+tools/asm6f tcrf10th.asm bin/tcrf10th.nes

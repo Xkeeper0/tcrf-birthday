@@ -1,15 +1,14 @@
 The TCRF Birthday Blowout
 =========================
 
-This project creates a NES ROM to celebrate [TCRF](https://tcrf.net/)'s 9th birthday.
+This project creates a NES ROM to celebrate [TCRF](https://tcrf.net/)'s 10th birthday.
 
-It's still a work in progress (and this is still a private repo, of course)...
-but eventually it'll be done!
+
 
 
 Building
 --------
-Run `build.bat`. The output file will be placed as `bin/tcrf9yrs.nes`.
+Run `build.bat`. The output file will be placed as `bin/tcrf10th.nes`.
 
 
 Contributors
@@ -18,7 +17,7 @@ Contributors
 * ROM development staff:
   * Xkeeper: Programming
   * BMF54123: Graphics
-  * Raspberryfloof: Music and sounds
+  * Raspberryfloof: Music
 
 * Other contributors
   * All TCRF staff and editors
